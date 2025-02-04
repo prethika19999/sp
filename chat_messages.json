@@ -1,0 +1,179 @@
+{
+    "Yuthika_Shivank": [
+        {
+            "sender": "Yuthika",
+            "message": "hi",
+            "timestamp": "2024-12-09T23:20:59.864012"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "hi",
+            "timestamp": "2024-12-09T23:21:01.478266"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "bye",
+            "timestamp": "2024-12-10T21:39:33.283357"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "bye",
+            "timestamp": "2024-12-10T21:39:34.347492"
+        }
+    ],
+    "Yuthika_Call": [
+        {
+            "sender": "Yuthika",
+            "message": "hi ",
+            "timestamp": "2024-12-09T23:41:09.696566"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "hi ",
+            "timestamp": "2024-12-09T23:41:12.048870"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "hello",
+            "timestamp": "2024-12-19T11:41:57.728119"
+        }
+    ],
+    "Yuthika_Rohan": [
+        {
+            "sender": "Yuthika",
+            "message": "hi",
+            "timestamp": "2024-12-18T22:03:42.288084"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "hi",
+            "timestamp": "2024-12-18T22:03:43.349599"
+        }
+    ],
+    "Call_Yuthika": [
+        {
+            "sender": "Call",
+            "message": "u should checkout the action videos they are nice",
+            "timestamp": "2024-12-19T10:18:26.955297"
+        },
+        {
+            "sender": "Call",
+            "message": "u should checkout the action videos they are nice",
+            "timestamp": "2024-12-19T10:18:27.143823"
+        }
+    ],
+    "Yuthika_Dean": [
+        {
+            "sender": "Yuthika",
+            "message": "hello",
+            "timestamp": "2024-12-19T12:40:46.610279"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "bye",
+            "timestamp": "2024-12-19T12:41:25.961868"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "hey",
+            "timestamp": "2024-12-19T21:33:50.389642"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "hey",
+            "timestamp": "2024-12-19T21:33:51.198902"
+        }
+    ],
+    "Ting_Yuthika": [
+        {
+            "sender": "Ting",
+            "message": "hello",
+            "timestamp": "2024-12-19T13:16:32.702411"
+        },
+        {
+            "sender": "Ting",
+            "message": "hello",
+            "timestamp": "2024-12-19T13:16:32.869646"
+        },
+        {
+            "sender": "Ting",
+            "message": "well ",
+            "timestamp": "2024-12-20T11:17:58.750306"
+        },
+        {
+            "sender": "Ting",
+            "message": "well ",
+            "timestamp": "2024-12-20T11:18:05.289705"
+        }
+    ],
+    "Yuthika_Ting": [
+        {
+            "sender": "Yuthika",
+            "message": "hey",
+            "timestamp": "2024-12-19T13:17:02.241240"
+        },
+        {
+            "sender": "Yuthika",
+            "message": "hey",
+            "timestamp": "2024-12-19T13:17:03.637258"
+        }
+    ],
+    "Dean_Ting": [
+        {
+            "sender": "Dean",
+            "message": "hi",
+            "timestamp": "2024-12-20T15:32:29.876689"
+        },
+        {
+            "sender": "Dean",
+            "message": "hi",
+            "timestamp": "2024-12-20T15:32:30.052488"
+        }
+    ],
+    "Ting_Dean": [
+        {
+            "sender": "Ting",
+            "message": "what's up?",
+            "timestamp": "2024-12-20T15:33:04.692735"
+        },
+        {
+            "sender": "Ting",
+            "message": "what's up?",
+            "timestamp": "2024-12-20T15:33:04.861469"
+        }
+    ],
+    "nithish_Yuthika": [
+        {
+            "sender": "nithish",
+            "message": "hi",
+            "timestamp": "2025-02-01T21:53:36.149398"
+        },
+        {
+            "sender": "nithish",
+            "message": "hi",
+            "timestamp": "2025-02-01T21:53:39.548845"
+        }
+    ],
+    "nithish_Yuthi": [
+        {
+            "sender": "nithish",
+            "message": "hi",
+            "timestamp": "2025-02-02T14:22:10.847706"
+        },
+        {
+            "sender": "nithish",
+            "message": "hi",
+            "timestamp": "2025-02-02T14:22:19.297157"
+        },
+        {
+            "sender": "nithish",
+            "message": "hi",
+            "timestamp": "2025-02-02T14:22:20.821276"
+        },
+        {
+            "sender": "nithish",
+            "message": "hi",
+            "timestamp": "2025-02-02T14:22:21.028367"
+        }
+    ]
+}
