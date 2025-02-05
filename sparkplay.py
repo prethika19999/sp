@@ -63,7 +63,7 @@ FRAME_SIZE = (64, 64)
 CATEGORIES = ["Action", "Comedy", "Music"] 
 
 # Load the video classification model
-model = load_model("/Users/yuthikaprethika/Documents/GitHub/sp/video_classification_model.h5")
+model = load_model("video_classification_model.h5")
 
 # Initialize session state
 if "logged_in" not in st.session_state:
