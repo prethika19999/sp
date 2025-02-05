@@ -151,19 +151,14 @@
     },
     "nithish": {
         "liked": [
-<<<<<<< HEAD
-<<<<<<< HEAD
+            "video_46",
+            "video_1",
+            "video_15",
+            "video_46",
             "video_46",
             "video_1",
             "video_15"
-=======
-            "video_46"
->>>>>>> fac8dd03 (first commit)
-=======
-            "video_46",
-            "video_1",
-            "video_15"
->>>>>>> e34582cd (Initial commit)
+
         ],
         "disliked": [],
         "comments": {},
@@ -172,28 +167,22 @@
             "video_6",
             "video_45",
             "video_21",
-<<<<<<< HEAD
-<<<<<<< HEAD
             "video_22",
             "video_24",
             "video_22",
             "video_46",
             "video_1",
-            "video_15"
-=======
+            "video_15",
             "video_23",
             "video_24",
             "video_22",
-            "video_46"
->>>>>>> fac8dd03 (first commit)
-=======
+            "video_46",
             "video_22",
             "video_24",
             "video_22",
             "video_46",
             "video_1",
             "video_15"
->>>>>>> e34582cd (Initial commit)
         ]
     }
 }
