@@ -373,8 +373,8 @@ if not st.session_state.logged_in:
     st.write("Action Videos")
     action_video_urls = [
         "Videos_Data/video_1.mp4",
-        "/Videos_Data/video_2.mp4",
-        "/Videos_Data/video_3.mp4",
+        "Videos_Data/video_2.mp4",
+        "Videos_Data/video_3.mp4",
     ]
     action_cols = st.columns(3)
     for i, url in enumerate(action_video_urls):
@@ -385,9 +385,9 @@ if not st.session_state.logged_in:
     # Comdey Videos Section
     st.write("Comdey Videos")
     comedy_video_urls = [
-        "/Videos_Data/video_40.mp4",
-        "/Videos_Data/video_32.mp4",
-        "/Videos_Data/video_39.mp4",
+        "Videos_Data/video_40.mp4",
+        "Videos_Data/video_32.mp4",
+        "Videos_Data/video_39.mp4",
     ]
     comedy_cols = st.columns(3)
     for i, url in enumerate(comedy_video_urls):
@@ -398,9 +398,9 @@ if not st.session_state.logged_in:
     # Music Videos Section
     st.write("Music Videos")
     music_video_urls = [
-        "/Videos_Data/video_42.mp4",
-        "/Videos_Data/video_43.mp4",
-        "/Videos_Data/video_44.mp4",
+        "Videos_Data/video_42.mp4",
+        "Videos_Data/video_43.mp4",
+        "Videos_Data/video_44.mp4",
     ]
     music_cols = st.columns(3)
     for i, url in enumerate(music_video_urls):
@@ -507,7 +507,7 @@ if st.session_state.logged_in:
 
             if "viewed" in user_activity and user_activity["viewed"]:
                 for video_id in user_activity["viewed"]:
-                    video_path = f"/Videos_Data/{video_id}.mp4"  # Adjust the path based on your structure
+                    video_path = f"Videos_Data/{video_id}.mp4"  # Adjust the path based on your structure
                     st.video(video_path)
                     st.caption(f"Watched: {video_id}")
             else:
@@ -522,7 +522,7 @@ if st.session_state.logged_in:
             
             if "liked" in user_activity and user_activity["liked"]:
                 for video_id in user_activity["liked"]:
-                    video_path = f"/Videos_Data/{video_id}.mp4"  # Adjust the path based on your structure
+                    video_path = f"Videos_Data/{video_id}.mp4"  # Adjust the path based on your structure
                     if os.path.exists(video_path):
                         st.video(video_path)
                         st.caption(f"Liked: {video_id}")
@@ -545,7 +545,7 @@ if st.session_state.logged_in:
         with video_col:
             if st.session_state.current_video:
                 # Display the selected video
-                st.video(f"/Videos_Data/{st.session_state.current_video}.mp4")
+                st.video(f"Videos_Data/{st.session_state.current_video}.mp4")
                 st.caption(f"Currently Watching: {st.session_state.current_video}")
 
                 # Update history and interactions
