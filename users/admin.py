@@ -8,10 +8,10 @@ import numpy as np
 from tensorflow.keras.models import load_model
 
 # Paths and constants
-CLASSIFIED_VIDEO_DIR = "/Users/yuthikaprethika/Documents/GitHub/sp/classified_videos"
+CLASSIFIED_VIDEO_DIR = "classified_videos"
 USER_DATA_FILE = "user_data.json"
 USER_ACTIVITY_FILE = "user_activity.json"
-MODEL_PATH = "/Users/yuthikaprethika/Documents/GitHub/sp/video_classification_model.h5"
+MODEL_PATH = "video_classification_model.h5"
 FRAMES_PER_VIDEO = 30
 FRAME_SIZE = (64, 64)
 CATEGORIES = ["Action", "Comedy", "Music"]
@@ -59,7 +59,7 @@ def admin_dashboard(username):
     # Display logo and heading
     header_col1, header_col2 = st.columns([1, 8])
     with header_col1:
-        st.image("/Users/yuthikaprethika/Documents/GitHub/sp/logo.jpeg", width=60)  # Adjust width as needed
+        st.image("logo.jpeg", width=60)  # Adjust width as needed
     with header_col2:
         st.title("Welcome to Sparkplay")
 
@@ -119,7 +119,7 @@ def admin_dashboard(username):
             st.error("Invalid JSON format.")
 
     # Get video IDs from folder
-    video_folder = "/Users/yuthikaprethika/Documents/GitHub/sp/Videos_Data"
+    video_folder = "Videos_Data"
     try:
         video_ids = [f for f in os.listdir(video_folder) if os.path.isfile(os.path.join(video_folder, f))]
     except FileNotFoundError:
