@@ -28,12 +28,6 @@ spark = SparkSession.builder \
     .config("spark.driver.memory", "2g") \
     .getOrCreate()
 
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
-st.set_option('server.enableCORS', False)
-st.set_option('server.enableWebsocketCompression', False)
-
 # Set up Streamlit page
 st.set_page_config(page_title="Sparkplay", layout="wide")
 
@@ -57,8 +51,6 @@ if "otp" not in st.session_state:
     st.session_state.otp = None
 if "otp_verified" not in st.session_state:
     st.session_state.otp_verified = False
-if "offline_mode" not in st.session_state:
-    st.session_state.offline_mode = False
 
 # Constants and Paths
 VIDEO_UPLOAD_DIR = "uploaded_videos"
@@ -68,34 +60,17 @@ USER_ACTIVITY_FILE = "user_activity.json"
 MODEL_PATH = "video_classification_model.h5"
 FRAMES_PER_VIDEO = 30
 FRAME_SIZE = (64, 64)
-CATEGORIES = ["Action", "Comedy", "Music"]
+CATEGORIES = ["Action", "Comedy", "Music"] 
 
 # Load the video classification model
 model = load_model("video_classification_model.h5")
 
-# Function to cache video metadata
-def cache_video_metadata(video_metadata, cache_file="video_metadata_cache.json"):
-    with open(cache_file, "w") as file:
-        json.dump(video_metadata, file)
-
-# Function to cache user interactions
-def cache_user_interactions(user_interactions, cache_file="user_interactions_cache.json"):
-    with open(cache_file, "w") as file:
-        json.dump(user_interactions, file)
-
-# Function to load cached video metadata
-def load_cached_video_metadata(cache_file="video_metadata_cache.json"):
-    if os.path.exists(cache_file):
-        with open(cache_file, "r") as file:
-            return json.load(file)
-    return []
-
-# Function to load cached user interactions
-def load_cached_user_interactions(cache_file="user_interactions_cache.json"):
-    if os.path.exists(cache_file):
-        with open(cache_file, "r") as file:
-            return json.load(file)
-    return []
+# Initialize session state
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+    st.session_state.username = None
+if "new_uploaded_videos" not in st.session_state:
+    st.session_state.new_uploaded_videos = []
 
 # Function to extract frames from video
 def extract_frames(video_path):
@@ -154,8 +129,8 @@ def send_email(sender_email, sender_password, receiver_email, subject, body):
 def send_otp(email):
     otp = random.randint(100000, 999999)
     st.session_state.otp = otp
-    sender_email = "sparkplay4@gmail.com"
-    sender_password = "fjloeusfxyepjemq"
+    sender_email = "sparkplay4@gmail.com"  
+    sender_password = "fjloeusfxyepjemq"   
 
     # Create email message
     subject = "Sign Up OTP Verification"
@@ -183,7 +158,7 @@ def load_user_activity():
         return spark.read.json(USER_ACTIVITY_FILE, schema=schema)
     else:
         return spark.createDataFrame([], schema=schema)
-
+    
 # Function to create an interaction matrix
 def create_interaction_matrix(user_interactions, video_metadata, user_ids):
     video_ids = [video["Video_ID"] for video in video_metadata]
@@ -198,15 +173,7 @@ def create_interaction_matrix(user_interactions, video_metadata, user_ids):
     return interaction_matrix
 
 # Function to recommend videos
-def recommend_videos_cf(user_id, interaction_matrix=None, video_metadata=None, user_ids=None, num_recommendations=3):
-    # Load cached data if no data is provided
-    if interaction_matrix is None or video_metadata is None or user_ids is None:
-        video_metadata = load_cached_video_metadata()
-        user_interactions = load_cached_user_interactions()
-        user_ids = fetch_user_ids()
-        interaction_matrix = create_interaction_matrix(user_interactions, video_metadata, user_ids)
-
-    # Proceed with the recommendation logic
+def recommend_videos_cf(user_id, interaction_matrix, video_metadata, user_ids, num_recommendations=3):
     video_ids = [video["Video_ID"] for video in video_metadata]
     user_idx = user_ids.index(user_id)
     user_ratings = interaction_matrix[user_idx]
@@ -236,18 +203,21 @@ def log_user_activity(user_id, video_id, interaction_type):
     # Save updated activity back to JSON
     updated_user_activity_df.write.json(USER_ACTIVITY_FILE, mode="overwrite")
 
-# Cache video metadata and user interactions when the app starts
-if st.session_state.logged_in:
-    cache_video_metadata(video_metadata)
-    cache_user_interactions(st.session_state.user_interactions)
+# Function to recommend videos using collaborative filtering
+def recommend_videos(user_id, num_recommendations=3):
+    user_activity_df = load_user_activity()
 
-# Add a toggle for offline mode
-offline_mode = st.sidebar.checkbox("Offline Mode", key="offline_mode")
+    # Filter interactions for the current user
+    user_interactions = user_activity_df.filter(col("User_ID") == user_id)
 
-if offline_mode:
-    st.sidebar.info("You are in offline mode. Recommendations are based on cached data.")
-else:
-    st.sidebar.info("You are in online mode. Recommendations are based on live data.")
+    # Get all video IDs
+    all_videos = user_activity_df.select("Video_ID").distinct().rdd.flatMap(lambda x: x).collect()
+
+    # Calculate recommendation scores (placeholder similarity logic)
+    recommended_videos = [video for video in all_videos if video not in user_interactions.select("Video_ID").rdd.flatMap(lambda x: x).collect()]
+
+    # Return top recommendations
+    return recommended_videos[:num_recommendations]
 
 # Top-right buttons for Sign In, Sign Up, and Logout
 col1, col2, col3, col4 = st.columns([7, 1, 1, 1])
@@ -278,6 +248,7 @@ else:
             with open(video_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
             st.success("Video uploaded successfully!")
+            
 
             # Classify the video
             category = classify_video(video_path)
@@ -299,6 +270,7 @@ else:
 
 # Display Login or Sign Up Forms
 if st.session_state.show_login:
+
     # Display logo and heading
     header_col1, header_col2 = st.columns([1, 8])
     with header_col1:
@@ -309,7 +281,7 @@ if st.session_state.show_login:
     st.subheader("Login")
     username = st.text_input("Username", key="login_username")
     password = st.text_input("Password", type="password", key="login_password")
-
+    
     if st.button("Login", key="login_button"):
         if login(username, password):
             st.session_state.logged_in = True
@@ -321,6 +293,7 @@ if st.session_state.show_login:
             st.error("Invalid username or password.")
 
 elif st.session_state.show_signup:
+
     # Display logo and heading
     header_col1, header_col2 = st.columns([1, 8])
     with header_col1:
@@ -334,7 +307,7 @@ elif st.session_state.show_signup:
     confirm_password = st.text_input("Confirm Password", type="password", key="signup_confirm_password")
     email = st.text_input("Email")
     age = st.text_input("Age")
-    location = st.selectbox("Location", ["India", "London", "USA", "Singapore"], key="signup_location")
+    location = st.selectbox("Location", ["Delhi", "London", "USA", "Singapore"], key="signup_location")
     favorite_genre = st.selectbox("Favorite Genre", ["Action", "Comedy", "Music"], key="signup_genre")
 
     if st.button("Send OTP", key="send_otp_button"):
@@ -382,7 +355,7 @@ if not st.session_state.logged_in:
             <h3 style='color: #333; margin: 0;'>🎉✨ **Join the Fun!** ✨🎉<br>
         🚀 Sign up or sign in to access ALL videos 🎬 and unlock exclusive features! 💥 Let's get started! 🔓🎉</h3>
         </div>
-        """,
+        """, 
         unsafe_allow_html=True
     )
 
@@ -392,24 +365,12 @@ if not st.session_state.logged_in:
         st.image("logo.jpeg", width=60)  # Adjust width as needed
     with header_col2:
         st.title("Welcome to Sparkplay")
-    # Define video_urls before using it
+    # Define video_urls 
     video_urls = [
         "Videos_Data/video_52.mp4",
         "Videos_Data/video_42.mp4",
         "Videos_Data/video_13.mp4",
     ]
-
-#     import random
-
-# # Random video picker
-#     if st.button("Surprise Me!", key="surprise_me_button"):
-#         video_urls = [
-#             "Videos_Data/video_51.mp4",
-#             "Videos_Data/video_41.mp4",
-#             "Videos_Data/video_36.mp4",
-#     ]
-#     random_video = random.choice(video_urls)
-#     st.video(random_video)
 
     # Featured Videos Section
     st.subheader("Explore by Genre")
@@ -417,9 +378,9 @@ if not st.session_state.logged_in:
     # Action Videos Section
     st.write("Action Videos")
     action_video_urls = [
-        "Videos_Data/video_11.mp4",
-        "Videos_Data/video_12.mp4",
-        "Videos_Data/video_13.mp4",
+        "Videos_Data/video_1.mp4",
+        "Videos_Data/video_2.mp4",
+        "Videos_Data/video_3.mp4",
     ]
     action_cols = st.columns(3)
     for i, url in enumerate(action_video_urls):
@@ -427,12 +388,12 @@ if not st.session_state.logged_in:
             st.video(url)
             st.caption(f"Action Video {i+1}")
 
-    # Comedy Videos Section
-    st.write("Comedy Videos")
+    # Comdey Videos Section
+    st.write("Comdey Videos")
     comedy_video_urls = [
-        "Videos_Data/video_21.mp4",
-        "Videos_Data/video_22.mp4",
-        "Videos_Data/video_24.mp4",
+        "Videos_Data/video_40.mp4",
+        "Videos_Data/video_32.mp4",
+        "Videos_Data/video_39.mp4",
     ]
     comedy_cols = st.columns(3)
     for i, url in enumerate(comedy_video_urls):
@@ -443,16 +404,15 @@ if not st.session_state.logged_in:
     # Music Videos Section
     st.write("Music Videos")
     music_video_urls = [
-        "Videos_Data/video_6.mp4",
-        "Videos_Data/video_3.mp4",
-        "Videos_Data/video_10.mp4",
+        "Videos_Data/video_42.mp4",
+        "Videos_Data/video_43.mp4",
+        "Videos_Data/video_44.mp4",
     ]
     music_cols = st.columns(3)
     for i, url in enumerate(music_video_urls):
         with music_cols[i]:
             st.video(url)
             st.caption(f"Music Video {i+1}")
-    
     import random
     st.subheader("Ready for a Surprise? Let’s Watch Something Fun!")
 
@@ -557,6 +517,12 @@ if st.session_state.logged_in:
                     user_activity = json.load(file)
                 return user_activity.get(username, {})
             return {}
+        
+        offline_mode = st.sidebar.checkbox("Offline Mode", key="offline_mode")
+        if offline_mode:
+            st.sidebar.info("You are in offline mode. Recommendations are based on cached data.")
+        else:
+            st.sidebar.info("You are in online mode. Recommendations are based on live data.")
 
         # Sidebar for chat toggle and chat recipient selection
         st.sidebar.subheader("Options")
@@ -584,7 +550,7 @@ if st.session_state.logged_in:
 
             # Fetch user activity for the logged-in user
             user_activity = fetch_user_activity(st.session_state.username)
-
+            
             if "liked" in user_activity and user_activity["liked"]:
                 for video_id in user_activity["liked"]:
                     video_path = f"Videos_Data/{video_id}.mp4"  # Adjust the path based on your structure
@@ -643,13 +609,8 @@ if st.session_state.logged_in:
                             st.error("Comment cannot be empty!")
 
                 # Display recommended videos
-                if offline_mode:
-                    # Use cached data for recommendations
-                    recommendations = recommend_videos_cf(st.session_state.username)
-                else:
-                    # Use live data for recommendations
-                    interaction_matrix = create_interaction_matrix(st.session_state.user_interactions, video_metadata, user_ids)
-                    recommendations = recommend_videos_cf(st.session_state.username, interaction_matrix, video_metadata, user_ids)
+                interaction_matrix = create_interaction_matrix(st.session_state.user_interactions, video_metadata, user_ids)
+                recommendations = recommend_videos_cf(st.session_state.username, interaction_matrix, video_metadata, user_ids)
 
                 st.subheader("Recommended Videos")
                 recommended_cols = st.columns(3)
@@ -671,10 +632,10 @@ if st.session_state.logged_in:
                         if st.button(f"Play {video['Title']}", key=f"play_{video['Video_ID']}"):
                             st.session_state.current_video = video["Video_ID"]
                             st.experimental_set_query_params(rerun="true")
+
         import random
         st.subheader("Can't choose? Let us surprise you with your next favorite video!")
 
-        # Define video_urls at the beginning of your script
         video_urls = [
             "Videos_Data/video_1.mp4",
             "Videos_Data/video_2.mp4",
@@ -688,10 +649,10 @@ if st.session_state.logged_in:
             "Videos_Data/video_10.mp4",
         ]
 
-# Later in your code, you can use it
         if st.button("Surprise Me!", key="surprise_me_button"):
             random_video = random.choice(video_urls)
             st.video(random_video)
+
         # Chat section
         if st.session_state.show_chat and recipient:
             with chat_col:
@@ -712,6 +673,15 @@ if st.session_state.logged_in:
                         st.experimental_set_query_params(rerun="true")
                     else:
                         st.error("Message cannot be empty!")
+
+        # Function to allow normal users to view videos offline
+        def view_video_offline(video_file):
+            video_path = os.path.join(VIDEO_UPLOAD_DIR, video_file)
+            if os.path.exists(video_path):
+                st.video(video_path)
+                st.caption(f"Viewing: {video_file}")
+            else:
+                st.error("Video not found.")
 
 # Footer
 st.write("---")
