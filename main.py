@@ -665,7 +665,27 @@ if st.session_state.logged_in:
                         if st.button(f"Play {video['Title']}", key=f"play_{video['Video_ID']}"):
                             st.session_state.current_video = video["Video_ID"]
                             st.experimental_set_query_params(rerun="true")
+        import random
+        st.subheader("Can't choose? Let us surprise you with your next favorite video!")
 
+        # Define video_urls at the beginning of your script
+        video_urls = [
+            "Videos_Data/video_1.mp4",
+            "Videos_Data/video_2.mp4",
+            "Videos_Data/video_3.mp4",
+            "Videos_Data/video_4.mp4",
+            "Videos_Data/video_5.mp4",
+            "Videos_Data/video_6.mp4",
+            "Videos_Data/video_7.mp4",
+            "Videos_Data/video_8.mp4",
+            "Videos_Data/video_9.mp4",
+            "Videos_Data/video_10.mp4",
+        ]
+
+# Later in your code, you can use it
+        if st.button("Surprise Me!", key="surprise_me_button"):
+            random_video = random.choice(video_urls)
+            st.video(random_video)
         # Chat section
         if st.session_state.show_chat and recipient:
             with chat_col:
