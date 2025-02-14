@@ -28,6 +28,12 @@ spark = SparkSession.builder \
     .config("spark.driver.memory", "2g") \
     .getOrCreate()
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+st.set_option('server.enableCORS', False)
+st.set_option('server.enableWebsocketCompression', False)
+
 # Set up Streamlit page
 st.set_page_config(page_title="Sparkplay", layout="wide")
 
